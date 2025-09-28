@@ -1,0 +1,9 @@
+.panel {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.1);
+}
+
+.profile-pic {
+  border: 4px solid var(--brand-pink);
+}

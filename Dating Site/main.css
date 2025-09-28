@@ -1,0 +1,42 @@
+:root{
+  --brand-pink: #f84e5d;
+  --brand-pink-dark: #d93d4f;
+
+  --bs-primary: var(--brand-pink);
+  --bs-link-color: var(--brand-pink);
+  --bs-link-hover-color: var(--brand-pink-dark);
+  --bs-nav-pills-link-active-bg: var(--brand-pink);
+  --bs-nav-pills-link-active-color: #fff;
+}
+
+.btn-primary{
+  background-color: var(--brand-pink);
+  border-color: var(--brand-pink);
+}
+.btn-primary:hover{
+  background-color: var(--brand-pink-dark);
+  border-color: var(--brand-pink-dark);
+}
+
+.nav-underline .nav-link.active{
+  color: #212529;
+  font-weight: 700;
+  border-bottom: .2rem solid var(--brand-pink);
+}
+.nav-underline .nav-link{
+  color: #212529;
+}
+
+.card-gradient{
+  width: 200px;
+  height: 280px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #ff007a, #ff7a2f);
+  box-shadow: 0 6px 12px rgba(0,0,0,.1);
+}
+
+.bg-cover{ background-size: cover; background-position: center; }
+.match-tile .ratio{ box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+.match-tile .ratio:hover{ transform: translateY(-2px); transition: transform .15s ease; }
+
+.list-group-item{ padding-top: .8rem; padding-bottom: .8rem; }
