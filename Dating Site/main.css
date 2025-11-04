@@ -1,45 +1,64 @@
-:root{
+:root {
   --brand-pink: #f84e5d;
+  --brand-pink-2: #ff7a9a;
   --brand-pink-dark: #d93d4f;
 
-  --bs-primary: var(--brand-pink);
-  --bs-link-color: var(--brand-pink);
-  --bs-link-hover-color: var(--brand-pink-dark);
-  --bs-nav-pills-link-active-bg: var(--brand-pink);
-  --bs-nav-pills-link-active-color: #fff;
+  --panel-radius: 18px;
+  --panel-shadow: 0 10px 30px rgba(0, 0, 0, .08);
 }
 
-.btn-primary{
+/* App background (matches your auth pages) */
+body.app-bg {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #ffd6e0 0%, rgba(255, 214, 224, 0) 60%),
+    radial-gradient(1200px 600px at 110% 0%, #ffd6e0 0%, rgba(255, 214, 224, 0) 60%),
+    linear-gradient(180deg, #ffe6ec 0%, #ffd1da 50%, #ffc3d0 100%);
+  min-height: 100vh;
+}
+
+/* White panels */
+.panel {
+  background: #fff;
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+}
+
+/* Make the header float nicely over the bg */
+.header-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(140%) blur(6px);
+  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Brand buttons */
+.btn-primary {
   background-color: var(--brand-pink);
   border-color: var(--brand-pink);
 }
-.btn-primary:hover{
+
+.btn-primary:hover {
   background-color: var(--brand-pink-dark);
   border-color: var(--brand-pink-dark);
 }
 
-.nav-underline .nav-link.active{
-  color: #212529;
-  font-weight: 700;
+/* Underline tabs accent */
+.nav-underline .nav-link.active {
   border-bottom: .2rem solid var(--brand-pink);
-}
-.nav-underline .nav-link{
-  color: #212529;
+  font-weight: 700;
 }
 
-.card-gradient{
+/* Neutral (unselected) tab color */
+.nav-underline .nav-link {
+  color: #212529 !important;
+  /* dark neutral text */
+}
+
+/* Demo card for empty state */
+.card-gradient {
   width: 200px;
   height: 280px;
-  border-radius: 1rem;
+  border-radius: 16px;
   background: linear-gradient(135deg, #ff007a, #ff7a2f);
-  box-shadow: 0 6px 12px rgba(0,0,0,.1);
-}
-
-.bg-cover{ background-size: cover; background-position: center; }
-.match-tile .ratio{ box-shadow: 0 10px 20px rgba(0,0,0,.08); }
-.match-tile .ratio:hover{ transform: translateY(-2px); transition: transform .15s ease; }
-
-.list-group-item{
-  padding-top: .8rem;
-  padding-bottom: .8rem;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .12);
 }

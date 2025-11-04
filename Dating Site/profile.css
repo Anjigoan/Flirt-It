@@ -11,7 +11,8 @@
   height: 144px;
   object-fit: cover;
   border-radius: 50%;
-  border: 4px solid var(--bs-primary); /* uses Bootstrap’s primary color */
+  border: 4px solid var(--bs-primary);
+  /* uses Bootstrap’s primary color */
 }
 
 /* Preferences as chips */
