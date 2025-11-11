@@ -62,3 +62,70 @@ body.app-bg {
   background: linear-gradient(135deg, #ff007a, #ff7a2f);
   box-shadow: 0 12px 24px rgba(0, 0, 0, .12);
 }
+
+/* Swipe area */
+#swipe-area {
+  min-height: 70vh;
+}
+
+/* Card stack container */
+#card-stack {
+  width: 320px;
+  max-width: 90vw;
+  height: 420px;
+  /* controls card height */
+}
+
+/* Individual cards */
+.swipe-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  cursor: grab;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, opacity 0.2s ease-out;
+}
+
+/* little depth for cards underneath */
+.swipe-card:nth-child(2) {
+  transform: scale(0.97) translateY(10px);
+  opacity: 0.9;
+}
+
+.swipe-card:nth-child(3) {
+  transform: scale(0.94) translateY(20px);
+  opacity: 0.8;
+}
+
+/* Photo covers top */
+.swipe-card-photo {
+  height: 75%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Footer area */
+.swipe-card-footer {
+  height: 25%;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* While dragging */
+.swipe-card.is-dragging {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+  cursor: grabbing;
+}
+
+/* Reusable chip style for modal interests */
+.interest-chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #f84e5d;
+  color: #f84e5d;
+  font-size: 0.8rem;
+}
