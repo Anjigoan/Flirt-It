@@ -1,0 +1,178 @@
+/*
+:root{
+  --brand-pink: #f84e5d;
+  --brand-pink-dark: #d93d4f;
+
+  --bs-primary: var(--brand-pink);
+  --bs-link-color: var(--brand-pink);
+  --bs-link-hover-color: var(--brand-pink-dark);
+  --bs-nav-pills-link-active-bg: var(--brand-pink);
+  --bs-nav-pills-link-active-color: #fff;
+}
+
+.btn-primary{
+  background-color: var(--brand-pink);
+  border-color: var(--brand-pink);
+}
+.btn-primary:hover{
+  background-color: var(--brand-pink-dark);
+  border-color: var(--brand-pink-dark);
+}
+
+.nav-underline .nav-link.active{
+  color: #212529;
+  font-weight: 700;
+  border-bottom: .2rem solid var(--brand-pink);
+}
+.nav-underline .nav-link{
+  color: #212529;
+}
+
+.card-gradient{
+  width: 200px;
+  height: 280px;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #ff007a, #ff7a2f);
+  box-shadow: 0 6px 12px rgba(0,0,0,.1);
+}
+
+.bg-cover{ background-size: cover; background-position: center; }
+.match-tile .ratio{ box-shadow: 0 10px 20px rgba(0,0,0,.08); }
+.match-tile .ratio:hover{ transform: translateY(-2px); transition: transform .15s ease; }
+
+.list-group-item{
+  padding-top: .8rem;
+  padding-bottom: .8rem;
+}
+*/
+:root {
+  --brand-pink: #f84e5d;
+  --brand-pink-2: #ff7a9a;
+  --brand-pink-dark: #d93d4f;
+
+  --panel-radius: 18px;
+  --panel-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+}
+
+/* App background (matches your auth pages) */
+body.app-bg {
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #ffd6e0 0%, rgba(255, 214, 224, 0) 60%),
+    radial-gradient(1200px 600px at 110% 0%, #ffd6e0 0%, rgba(255, 214, 224, 0) 60%),
+    linear-gradient(180deg, #ffe6ec 0%, #ffd1da 50%, #ffc3d0 100%);
+  min-height: 100vh;
+}
+
+/* White panels */
+.panel {
+  background: #fff;
+  border-radius: var(--panel-radius);
+  box-shadow: var(--panel-shadow);
+}
+
+/* Make the header float nicely over the bg */
+.header-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: saturate(140%) blur(6px);
+  -webkit-backdrop-filter: saturate(140%) blur(6px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Brand buttons */
+.btn-primary {
+  background-color: var(--brand-pink);
+  border-color: var(--brand-pink);
+}
+
+.btn-primary:hover {
+  background-color: var(--brand-pink-dark);
+  border-color: var(--brand-pink-dark);
+}
+
+/* Underline tabs accent */
+.nav-underline .nav-link.active {
+  border-bottom: .2rem solid var(--brand-pink);
+  font-weight: 700;
+}
+
+/* Neutral (unselected) tab color */
+.nav-underline .nav-link {
+  color: #212529 !important;
+  /* dark neutral text */
+}
+
+/* Demo card for empty state */
+.card-gradient {
+  width: 200px;
+  height: 280px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ff007a, #ff7a2f);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, .12);
+}
+
+/* Swipe area */
+#swipe-area {
+  min-height: 70vh;
+}
+
+/* Card stack container */
+#card-stack {
+  width: 320px;
+  max-width: 90vw;
+  height: 320px;
+  /* controls card height */
+}
+
+/* Individual cards */
+.swipe-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+  cursor: grab;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, opacity 0.2s ease-out;
+}
+
+/* little depth for cards underneath */
+.swipe-card:nth-child(2) {
+  transform: scale(0.97) translateY(10px);
+  opacity: 0.9;
+}
+
+.swipe-card:nth-child(3) {
+  transform: scale(0.94) translateY(20px);
+  opacity: 0.5;
+}
+
+/* Photo covers top */
+.swipe-card-photo {
+  height: 75%;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Footer area */
+.swipe-card-footer {
+  height: 25%;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* While dragging */
+.swipe-card.is-dragging {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
+  cursor: grabbing;
+}
+
+/* Reusable chip style for modal interests */
+.interest-chip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid #f84e5d;
+  color: #f84e5d;
+  font-size: 0.8rem;
+}
