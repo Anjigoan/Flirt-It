@@ -130,7 +130,7 @@ def profile():
     user = cursor.fetchone()
     cursor.close()
 
-    print(user)
+    print("Current user details: ",user)
 
     return render_template("profile.html", user = user)
 
@@ -170,44 +170,92 @@ def main():
 
     user_gender_interest = user['gender_interest']
     user_interests = user['interests']
-    
+    print("<Current user gender interest> ", user_gender_interest, " <Current user interests> ", user_interests)
+    print()
     user_interests_list = [i.strip() for i in user_interests.split(",")]
-
-    # --- GET ALL POSSIBLE MATCHES ---
-    cursor.execute("SELECT id, user_id, full_name, age, interests, gender, gender_interest, profile_pic FROM user_details WHERE gender = %s AND user_id != %s", (user_gender_interest, user_id))
-    possible_matches = cursor.fetchall()
-    print("Possible matches: ", possible_matches)
+    print("List of the user interests: ", user_interests_list)
     print()
 
-    results = []
-    for u in possible_matches:
+    if user_gender_interest == "everyone":
+        print("Current user gender interests: ", user_gender_interest)
         print()
-        print("The for loop: ",u)
-        match_interests_list = [i.strip() for i in u['interests'].split(",")]
-        print("Match interestslist", match_interests_list)
 
-        shared_interests_count = len(set(user_interests_list) & set(match_interests_list))
-        print("Count of shared interests :", shared_interests_count)
+        cursor.execute("SELECT id, user_id, full_name, age, interests, gender, gender_interest, profile_pic FROM user_details WHERE user_id != %s",(user_id,))
+        possible_matches = cursor.fetchall()
+        print("Display all: ",possible_matches)
+        print()
 
-        
-        percentage = (shared_interests_count / len(user_interests_list)) * 100 if shared_interests_count > 0 else 0
-        
+        cursor.execute("SELECT user_id FROM user_details WHERE user_id = %s",(user_id,))
+        current_user_id = cursor.fetchall()
+        print("Current user: ", current_user_id)
 
-        results.append({
-            "user_same_interests": u,
-            "count": shared_interests_count,
-            "percentage": round(percentage, 2)
-        })
-        print("The Percentage :", percentage)
+        results = []
+        for u in possible_matches:
+            print()
+            print("The for loop: ",u)
+            match_interests_list = [i.strip() for i in u['interests'].split(",")]
+            print("Match interestslist", match_interests_list)
 
-    print()
-    print("The resulta list :", results)
+            shared_interests_count = len(set(user_interests_list) & set(match_interests_list))
+            print("Count of shared interests :", shared_interests_count)
 
-    print()
+            
+            percentage = (shared_interests_count / len(user_interests_list)) * 100 if shared_interests_count > 0 else 0
+            
+            results.append({
+                "user_same_interests": u,
+                "count": shared_interests_count,
+                "percentage": round(percentage, 2)
+            })
+            print("The Percentage :", percentage)
 
-    #Sort highest to lowest percentage
-    results = sorted(results, key=lambda x: x['percentage'], reverse=True)
-    print("Sorted users who have common interests: ", results)
+        print()
+        print("The resulta list :", results,)
+
+        print()
+
+        #Sort highest to lowest percentage
+        results = sorted(results, key=lambda x: x['percentage'], reverse=True)
+        print("Sorted users who have common interests: ", results)
+
+################################################################
+
+        # --- GET ALL POSSIBLE MATCHES ---
+    else:
+        cursor.execute("SELECT id, user_id, full_name, age, interests, gender, gender_interest, profile_pic FROM user_details WHERE gender = %s AND user_id != %s", (user_gender_interest, user_id))
+        possible_matches = cursor.fetchall()
+        print()
+        print("Possible matches: ", possible_matches)
+        print()
+
+        results = []
+        for u in possible_matches:
+            print()
+            print("The for loop: ",u)
+            match_interests_list = [i.strip() for i in u['interests'].split(",")]
+            print("Match interestslist", match_interests_list)
+
+            shared_interests_count = len(set(user_interests_list) & set(match_interests_list))
+            print("Count of shared interests :", shared_interests_count)
+
+            
+            percentage = (shared_interests_count / len(user_interests_list)) * 100 if shared_interests_count > 0 else 0
+            
+            results.append({
+                "user_same_interests": u,
+                "count": shared_interests_count,
+                "percentage": round(percentage, 2)
+            })
+            print("The Percentage :", percentage)
+
+        print()
+        print("The resulta list :", results)
+
+        print()
+
+        #Sort highest to lowest percentage
+        results = sorted(results, key=lambda x: x['percentage'], reverse=True)
+        print("Sorted users who have common interests: ", results)
 
     cursor.close()
 

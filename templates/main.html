@@ -111,23 +111,26 @@
         <!-- MATCHES TAB -->
         <div class="tab-pane fade show active" id="matches" role="tabpanel" aria-labelledby="matches-tab">
           <div id="swipe-area" class="d-flex flex-column align-items-center justify-content-center py-4">
-            <div id="card-stack" class="position-relative">
 
-        <div id="card-stack" class="position-relative">
- <!--------------Fix the picture ---------------------------------------------------------------------------------------------------->                         
-          {% for u in match_interests %}
-          <div class="swipe-card"
-              data-name="{{ u.data.full_name }}"
-              data-age="{{ u.data.age }}"
-              data-interests="{{ u.data.interests }}">
+          <div id="card-stack" class="position-relative">
+            
+ <!------------------------------------------------------------------------------------------------------------------>     
+                      
+          {% for u in match_interest %}
+            <div class="swipe-card"    
+              style="z-index: {{ loop.revindex }};"   
+              data-name="{{ u.user_same_interests.full_name }}"
+              data-age="{{ u.user_same_interests.age }}"
+              data-gender="{{ u.user_same_interests.gender}}"
+              data-interests="{{ u.user_same_interests.interests }}"> 
 
               <div class="swipe-card-photo" 
-                style="background-image: url('{{ url_for('static', filename='uploads/' ~  u.data.profile_pic) }}')">
+                style="background-image: url('{{ url_for('static', filename='uploads/' ~ u.user_same_interests.profile_pic) }}') ">
               </div>
               <div class="swipe-card-footer">
-                    <h4 class="mb-0">{{ u.full_name }}, {{u.age }}</h4>
+                    <h4 class="mb-0">{{ u.user_same_interests.full_name }}, {{ u.user_same_interests.age }}</h4> 
               </div>
-          </div>
+            </div>
           {% endfor %}
 <!------------------------------------------------------------------------------------------------------------------>
           </div>
@@ -159,8 +162,12 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
           <div>
-            <strong>Interests:</strong>
+            <strong>Interests :</strong>
             <div id="detailInterests" class="mt-1 d-flex flex-wrap gap-2"></div>
+          </div>
+           <div>
+            <strong>Gender :</strong>
+            <div id="detailGender" class="mt-1 d-flex flex-wrap gap-2"></div>
           </div>
         </div>
       </div>
@@ -264,9 +271,22 @@
       function openDetails(card) {
         const name = card.dataset.name;
         const age = card.dataset.age;
+        const gender = card.dataset.gender;
         const ints = (card.dataset.interests || '').split(',');
 
         document.getElementById('detailNameAge').textContent = `${name}, ${age}`;
+
+        document.getElementById('detailGender').textContent = `${gender}`;
+
+        const genderContainer = document.getElementById('detailGender');
+        genderContainer.innerHTML = '';
+
+        if (gender) {
+        const g = document.createElement('span');
+        g.className = 'interest-chip'; // same style as interests
+        g.textContent = gender;
+        genderContainer.appendChild(g);
+    }
 
         const interestsContainer = document.getElementById('detailInterests');
         interestsContainer.innerHTML = '';
