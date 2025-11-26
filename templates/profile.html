@@ -12,14 +12,15 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100"
-      style="background: url('{{ url_for('static', filename='essentials/background.jpg') }}') no-repeat center center fixed; background-size: cover;">
+    style="background: url('{{ url_for('static', filename='essentials/background.jpg') }}') no-repeat center center fixed; background-size: cover;">
 
 
     <header class="py-3 border-bottom">
         <div class="container-fluid px-0">
             <div class="d-flex justify-content-between align-items-center px-3">
                 <a class="d-flex align-items-center text-decoration-none" href="#">
-                    <img src="{{ url_for('static', filename='essentials/logo.png') }}" alt="Logo" style="height: 56px" class="me-2">
+                    <img src="{{ url_for('static', filename='essentials/logo.png') }}" alt="Logo" style="height: 56px"
+                        class="me-2">
                 </a>
                 <ul class="nav nav-pills">
                     <li class="nav-item"><a class="nav-link active" href="#">Profile</a></li>
@@ -35,10 +36,10 @@
 
             <!-- Profile picture -->
             <div class="mb-3 text-center">
-                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}"
-                     class="rounded-circle mb-3" width="140" height="140">
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" class="rounded-circle mb-3"
+                    width="140" height="140">
             </div>
-           
+
             <!-- Full Name -->
             <div class="mb-3">
                 <label class="form-label">Full Name</label>
@@ -68,11 +69,12 @@
                 <label class="form-label">Interests</label>
                 <textarea class="form-control" rows="3" readonly>{{ user.interests }}</textarea>
             </div>
-            <a href="/main"  class="btn btn-secondary w-100 py-2 mt-3">Back</a>
+            <a href="/main" class="btn btn-secondary w-100 py-2 mt-3">Back</a>
             <a href="/login" class="btn btn-secondary w-100 py-2 mt-3">Logout</a>
         </div>
 
     </main>
 
 </body>
+
 </html>

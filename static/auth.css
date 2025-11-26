@@ -1,18 +1,20 @@
-:root{
+:root {
     --bs-primary: #f84e5d;
-    --bs-primary-rgb: 248,78,93;
+    --bs-primary-rgb: 248, 78, 93;
 }
 
-.btn.btn-primary{
+.btn.btn-primary {
     background-color: #f84e5d;
     border-color: #f84e5d;
 }
-.btn.btn-primary:hover{
+
+.btn.btn-primary:hover {
     background-color: #d63d4f;
     border-color: #d63d4f;
 }
-.btn.btn-primary:focus{
-    box-shadow: 0 0 0 .25rem rgba(248,78,93,.35);
+
+.btn.btn-primary:focus {
+    box-shadow: 0 0 0 .25rem rgba(248, 78, 93, .35);
 }
 
 .btn-secondary {
@@ -42,7 +44,55 @@
 }
 
 .nav-pills .nav-link.active,
-.nav-pills .show > .nav-link{
+.nav-pills .show>.nav-link {
     background-color: #f84e5d;
+    color: #fff;
+}
+
+.login-error {
+    background: rgba(255, 240, 240, 0.9);
+    /* soft pink */
+    border: 1px solid #ff9ea8;
+    /* subtle border */
+    color: #b60000;
+    /* readable red text */
+    padding: 10px 16px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.about-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 0.75rem;
+}
+
+/* ABOUT PAGE HERO */
+.about-hero {
+    background: linear-gradient(135deg, #ff9a9e 0%, #ff6f91 40%, #ffc3a0 100%);
+    border-radius: 24px;
+    color: #fff;
+}
+
+.about-hero h1 {
+    font-weight: 700;
+}
+
+.about-hero p {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.about-pill {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.25);
     color: #fff;
 }

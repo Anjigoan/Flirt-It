@@ -12,7 +12,7 @@ app.secret_key = 'flirtit_secretkey'  # change this later for better security
 # MySQL Config 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '2005'   
+app.config['MYSQL_PASSWORD'] = 'Ranffer123!'   
 app.config['MYSQL_DB'] = 'flirtit_db'
 
 mysql = MySQL(app)
@@ -138,6 +138,7 @@ def profile():
 # ---- LOGIN ---
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error = None   # ← add this
 
     if request.method == 'POST':
         email = request.form['email']
@@ -153,10 +154,9 @@ def login():
             session['email'] = user[1]
             return redirect(url_for('main'))
         else:
-            flash("Invalid credentials!")
-            return redirect(url_for('login'))
+            error = "Invalid email or password."
 
-    return render_template('login.html')
+    return render_template('login.html', error=error)
 
 # ---- MAIN ----
 @app.route('/main')
@@ -263,6 +263,16 @@ def main():
 
     return render_template("main.html", match_interest = results)
     
+# ---- CONTACT ----
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+# ---- ABOUT ----
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 # ---- LOGOUT ----
 @app.route('/logout')
 def logout():
