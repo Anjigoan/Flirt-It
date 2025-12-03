@@ -1,9 +1,10 @@
 print("Flask is starting...")
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_mysqldb import MySQL
 from flask_bcrypt import Bcrypt
 from MySQLdb.cursors import DictCursor
 from flask_mysqldb import MySQLdb
+from flask_socketio import SocketIO, join_room, leave_room, emit
 
 
 app = Flask(__name__)
@@ -17,6 +18,27 @@ app.config['MYSQL_DB'] = 'flirtit_db'
 
 mysql = MySQL(app)
 bcrypt = Bcrypt(app)
+
+# Socket.IO
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+# ---------------- In-memory data structures ----------------
+
+# Set of allowed chat pairs (stored as sorted tuples → (smaller_id, bigger_id))
+allowed_conversations = set()
+
+# Messages per conversation
+# key: (user1_id, user2_id)  (sorted tuple)
+# value: list of { from_id, text }
+conversations_messages = {}
+
+
+def get_room_id(a, b):
+    """Return a stable room key for two users."""
+    a = int(a)
+    b = int(b)
+    return (a, b) if a < b else (b, a)
+
 
 # ========== ROUTES ==========
 @app.route('/')
@@ -157,16 +179,120 @@ def login():
             error = "Invalid email or password."
 
     return render_template('login.html', error=error)
+#####################################
 
+@app.route('/like/<int:other_id>', methods=['POST'])
+def like_user(other_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return "Unauthorized", 401
+
+    room = get_room_id(user_id, other_id)
+    allowed_conversations.add(room)
+
+    # Make sure a message list exists for this conversation
+    if room not in conversations_messages:
+        conversations_messages[room] = []
+
+    return '', 204
+
+@app.route('/chat/<int:other_id>')
+def chat(other_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('login'))
+
+    room = get_room_id(user_id, other_id)
+
+    # Enforce: can only chat if someone already liked (swiped right)
+    if room not in allowed_conversations:
+        flash("You can only message someone after swiping right on them.")
+        return redirect(url_for('main'))
+
+    # Get other user's details for display (name, photo)
+    cursor = mysql.connection.cursor(DictCursor)
+    cursor.execute(
+        "SELECT full_name, profile_pic FROM user_details WHERE user_id = %s",
+        (other_id,)
+    )
+    other_user = cursor.fetchone()
+    cursor.close()
+
+    messages = conversations_messages.get(room, [])
+
+    return render_template(
+        'chat.html',
+        other_user=other_user,
+        other_id=other_id,
+        current_user_id=user_id,
+        messages=messages
+    )
+@socketio.on('join')
+def handle_join(data):
+    user_id = session.get('user_id')
+    if not user_id:
+        return
+
+    other_id = int(data.get('other_id'))
+    room = get_room_id(user_id, other_id)
+
+    # Only join if conversation is allowed
+    if room not in allowed_conversations:
+        return
+
+    join_room(room)
+
+    # Send existing messages to the user who just joined
+    history = conversations_messages.get(room, [])
+    emit('history', history)
+
+
+@socketio.on('send_message')
+def handle_send_message(data):
+    user_id = session.get('user_id')
+    if not user_id:
+        return
+
+    other_id = int(data.get('other_id'))
+    text = (data.get('text') or '').strip()
+    if not text:
+        return
+
+    room = get_room_id(user_id, other_id)
+    if room not in allowed_conversations:
+        return  # not allowed
+
+    msg = {
+        'from_id': int(user_id),
+        'text': text
+    }
+
+    # Save to in-memory storage
+    conversations_messages.setdefault(room, []).append(msg)
+
+    # Broadcast to both participants in the room
+    emit('new_message', msg, room=room)
+
+
+
+##############################
 # ---- MAIN ----
 @app.route('/main')
 def main():
     user_id = session.get('user_id')
+    if not user_id:
+        # no one logged in → go to login
+        return redirect(url_for('login'))
     
     cursor = mysql.connection.cursor(DictCursor)
 
     cursor.execute("SELECT gender_interest, interests FROM user_details WHERE user_id = %s", (user_id,))
     user = cursor.fetchone()
+
+    if user is None:
+        cursor.close()
+        flash("Please complete your details first.")
+        return redirect(url_for('details'))  # or whatever route shows the details form
 
     user_gender_interest = user['gender_interest']
     user_interests = user['interests']
@@ -261,7 +387,7 @@ def main():
 
     print("IM INNNNNN")
 
-    return render_template("main.html", match_interest = results)
+    return render_template("main.html", match_interest=results, current_user_id=user_id)
     
 # ---- CONTACT ----
 @app.route('/contact')
@@ -282,4 +408,4 @@ def logout():
 
 # ----- RUN APP ------
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
