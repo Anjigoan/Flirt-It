@@ -10,10 +10,10 @@ from flask_socketio import SocketIO, join_room, leave_room, emit
 app = Flask(__name__)
 app.secret_key = 'flirtit_secretkey'  # change this later for better security
 
-# MySQL Config 
+# MySQL Config
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Ranffer123!'   
+app.config['MYSQL_PASSWORD'] = 'Ranffer123!'
 app.config['MYSQL_DB'] = 'flirtit_db'
 
 mysql = MySQL(app)
