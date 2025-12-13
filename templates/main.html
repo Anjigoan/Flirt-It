@@ -1,65 +1,3 @@
-<!-- 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Main Page</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="main.css">
-</head>
-<body>
-  <header class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
-    <div class="d-flex align-items-center">
-     <img src="{{ url_for('static', filename='essentials/logo.svg') }}" alt="Flirt-iT" style="height:40px" class="me-2">
-      <span class="fw-bold fs-4">Flirt-iT</span>
-    </div>
-    <div>
-      <a href="{{ url_for('profile') }}" class="btn btn-primary">Profile</a>
-    </div>
-  </header>
-
-  <div class="container-fluid">
-    <div class="row">
-      
-      <div class="col-12 col-md-4 col-lg-3 border-end bg-white sidebar" style="min-height:100vh;">
-        <ul class="nav nav-underline nav-fill mt-3" id="sidebarTabs" role="tablist">
-          <li class="nav-item">
-            <button class="nav-link active" id="matches-tab" data-bs-toggle="tab" data-bs-target="#matches" type="button">Matches</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button">Messages</button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="col-12 col-md-8 col-lg-9 p-4">
-        <div class="tab-content">
-
-          <div class="tab-pane fade show active text-center" id="matches" role="tabpanel" aria-labelledby="matches-tab">
-            <div class="card-gradient mx-auto my-4"></div>
-            <h2 class="fw-bold">Start Matching</h2>
-            <p class="text-secondary">Matches will appear here once you like people. Message them directly from here when you’re ready to chat.</p>
-            <a href="#" class="btn btn-primary">Start Swiping</a>
-          </div>
-
-          <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-            <div class="alert alert-secondary text-center mt-5">
-              <h5>No Messages Yet</h5>
-              <p>Once you match, your conversations will appear here.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html> 
--->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,43 +79,58 @@
 
           <!-- MESSAGES TAB -->
           <div class="tab-pane fade" id="messages" role="tabpanel" aria-labelledby="messages-tab">
-            <div class="alert alert-secondary text-center mt-5">
-              <h5>No Messages Yet</h5>
-              <p>Once you match, your conversations will appear here.</p>
+
+            {% if conversations and conversations|length > 0 %}
+            <div class="list-group">
+              {% for c in conversations %}
+              <a class="list-group-item list-group-item-action d-flex align-items-center gap-3"
+                href="{{ url_for('chat', other_id=c.user_id) }}">
+
+                <img src="{{ url_for('static', filename='uploads/' ~ (c.profile_pic or 'default.png')) }}"
+                  alt="Profile picture" style="width:46px;height:46px;border-radius:50%;object-fit:cover;">
+
+                <div class="fw-semibold">{{ c.full_name }}</div>
+              </a>
+              {% endfor %}
             </div>
-          </div>
+            {% else %}
+            <div class="text-center p-4">
+              <h5 class="mb-2">No Messages Yet</h5>
+              <div class="text-muted">Once you match, your conversations will appear here.</div>
+            </div>
+            {% endif %}
 
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- CARD DETAILS MODAL -->
-  <div class="modal fade" id="cardDetailModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="detailNameAge"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-2">
-            <strong>Interests :</strong>
-            <div id="detailInterests" class="mt-1 d-flex flex-wrap gap-2"></div>
+    <!-- CARD DETAILS MODAL -->
+    <div class="modal fade" id="cardDetailModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="detailNameAge"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="mb-3">
-            <strong>Gender :</strong>
-            <div id="detailGender" class="mt-1 d-flex flex-wrap gap-2"></div>
-          </div>
-          <!-- Hidden user id -->
-          <input type="hidden" id="detailUserId">
+          <div class="modal-body">
+            <div class="mb-2">
+              <strong>Interests :</strong>
+              <div id="detailInterests" class="mt-1 d-flex flex-wrap gap-2"></div>
+            </div>
+            <div class="mb-3">
+              <strong>Gender :</strong>
+              <div id="detailGender" class="mt-1 d-flex flex-wrap gap-2"></div>
+            </div>
+            <!-- Hidden user id -->
+            <input type="hidden" id="detailUserId">
 
-          <!-- Message button -->
-          <a id="messageBtn" class="btn btn-primary w-100" href="#">Message</a>
+            <!-- Message button -->
+            <a id="messageBtn" class="btn btn-primary w-100" href="#">Message</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   </div>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js" crossorigin="anonymous"></script>
   <script>

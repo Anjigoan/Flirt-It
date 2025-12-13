@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 from MySQLdb.cursors import DictCursor
 from flask_mysqldb import MySQLdb
 from flask_socketio import SocketIO, join_room, leave_room, emit
+from collections import defaultdict
 
 
 app = Flask(__name__)
@@ -32,6 +33,7 @@ allowed_conversations = set()
 # value: list of { from_id, text }
 conversations_messages = {}
 
+swiped_users = defaultdict(set)
 
 def get_room_id(a, b):
     """Return a stable room key for two users."""
@@ -187,13 +189,25 @@ def like_user(other_id):
     if not user_id:
         return "Unauthorized", 401
 
+    # ✅ persist swipe in session (so refresh won't show again)
+    _add_seen(other_id)
+
     room = get_room_id(user_id, other_id)
     allowed_conversations.add(room)
 
-    # Make sure a message list exists for this conversation
     if room not in conversations_messages:
         conversations_messages[room] = []
 
+    return '', 204
+
+@app.route('/pass/<int:other_id>', methods=['POST'])
+def pass_user(other_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return "Unauthorized", 401
+
+    # ✅ persist swipe in session
+    _add_seen(other_id)
     return '', 204
 
 @app.route('/chat/<int:other_id>')
@@ -308,6 +322,8 @@ def main():
 
         cursor.execute("SELECT id, user_id, full_name, age, interests, gender, gender_interest, profile_pic FROM user_details WHERE user_id != %s",(user_id,))
         possible_matches = cursor.fetchall()
+        seen = _get_seen_set()
+        possible_matches = [u for u in possible_matches if int(u['user_id']) not in seen]
         print("Display all: ",possible_matches)
         print()
 
@@ -383,12 +399,53 @@ def main():
         results = sorted(results, key=lambda x: x['percentage'], reverse=True)
         print("Sorted users who have common interests: ", results)
 
+            # ---------------- MESSAGES TAB: build conversations list ----------------
+    # conversations_messages key is (user1_id, user2_id) where smaller first
+    conversation_user_ids = []
+
+    for room, msgs in conversations_messages.items():
+        # room is tuple like (a,b)
+        if user_id in room and msgs and len(msgs) > 0:
+            other_id = room[0] if room[1] == user_id else room[1]
+            conversation_user_ids.append(int(other_id))
+
+    # remove duplicates
+    conversation_user_ids = list(set(conversation_user_ids))
+
+    conversations = []
+    if conversation_user_ids:
+        placeholders = ",".join(["%s"] * len(conversation_user_ids))
+        cursor.execute(
+            f"""
+            SELECT user_id, full_name, profile_pic
+            FROM user_details
+            WHERE user_id IN ({placeholders})
+            """,
+            tuple(conversation_user_ids)
+        )
+        conversations = cursor.fetchall()
+
     cursor.close()
 
     print("IM INNNNNN")
 
-    return render_template("main.html", match_interest=results, current_user_id=user_id)
-    
+    return render_template(
+        "main.html",
+        match_interest=results,
+        current_user_id=user_id,
+        conversations=conversations
+    )
+
+def _get_seen_set():
+    # Stored in session cookie; persists across refresh
+    return set(session.get('swiped_ids', []))
+
+def _add_seen(other_id: int):
+    seen = _get_seen_set()
+    seen.add(int(other_id))
+    session['swiped_ids'] = list(seen)
+    session.modified = True
+
 # ---- CONTACT ----
 @app.route('/contact')
 def contact():
