@@ -41,7 +41,11 @@ def get_room_id(a, b):
     b = int(b)
     return (a, b) if a < b else (b, a)
 
-
+def ensure_conversation_allowed(user_id, other_id):
+    room = get_room_id(user_id, other_id)
+    allowed_conversations.add(room)
+    conversations_messages.setdefault(room, [])
+    return room
 # ========== ROUTES ==========
 @app.route('/')
 def home():
@@ -218,10 +222,8 @@ def chat(other_id):
 
     room = get_room_id(user_id, other_id)
 
-    # Enforce: can only chat if someone already liked (swiped right)
-    if room not in allowed_conversations:
-        flash("You can only message someone after swiping right on them.")
-        return redirect(url_for('main'))
+    # Allow chat immediately (no swipe-right required)
+    room = ensure_conversation_allowed(user_id, other_id)
 
     # Get other user's details for display (name, photo)
     cursor = mysql.connection.cursor(DictCursor)
@@ -250,9 +252,8 @@ def handle_join(data):
     other_id = int(data.get('other_id'))
     room = get_room_id(user_id, other_id)
 
-    # Only join if conversation is allowed
-    if room not in allowed_conversations:
-        return
+    # Allow chat immediately (no swipe-right required)
+    room = ensure_conversation_allowed(user_id, other_id)
 
     join_room(room)
 
@@ -272,9 +273,7 @@ def handle_send_message(data):
     if not text:
         return
 
-    room = get_room_id(user_id, other_id)
-    if room not in allowed_conversations:
-        return  # not allowed
+    room = ensure_conversation_allowed(user_id, other_id)
 
     msg = {
         'from_id': int(user_id),
